@@ -1,31 +1,25 @@
-@extends('layouts.layout_hompage', ['title' => 'Data jadwal']) 
+@extends('layouts.app_modern', ['title' => 'Data jadwal']) 
 
 @section('content') 
 <div class="card">
   <h5 class="card-header">Pendataran Ujian</h5>
     <div class="card-body">
-      <form action="/pendaftaran" method="POST" enctype="multipart/form-data"> 
+      <form action="/daftar_user" method="POST" enctype="multipart/form-data"> 
         @csrf 
         <div class="form-group mt-1 mb-3">
           <label for="kd_pendaftaran">Kode Pendaftaran</label>
-          <input type="text" class="form-control @error('kd_pendaftaran') is-invalid @enderror" id="kd_pendaftaran" name="kd_pendaftaran" value="{{ old('kd_pendaftaran') }}">
+          <input type="text" class="form-control @error('kd_pendaftaran') is-invalid @enderror" id="kd_pendaftaran" name="kd_pendaftaran" value="{{ $jadwal->kd_jadwal . str_pad(($pendaftaranCount + 1), 2, '0', STR_PAD_LEFT) }}" readonly>
           <span class="text-danger">{{ $errors->first('kd_pendaftaran') }}</span>
         </div>
         <div class="form-group mt-1 mb-3">
           <label for="nama">Nama</label>
-          <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama" value="{{ old('nama') }}">
+          <input type="text" class="form-control @error('nama') is-invalid @enderror" id="nama" name="nama" value="{{ old('nama', $existingPendaftaran ? $existingPendaftaran->nama : '') }}  {{ $existingPendaftaran ? 'readonly' : '' }}">
           <span class="text-danger">{{ $errors->first('nama') }}</span>
         </div>
-        <div class="form-group  mt-1  mt-3">
-          <label for="jadwal_id">Pilih Jadwal dan Skema</label>
-            <select name="jadwal_id" id="jadwal_id" class="form-control" required>
-                @foreach ($listJadwal as $jadwal)
-                    <option value="{{ $jadwal->id }}">
-                        {{ $jadwal->skema->nama_skema }} - {{ $jadwal->tgl_ujian }}
-                    </option>
-                @endforeach
-            </select>
-           <span class="text-danger">{{ $errors->first('skema_id') }}</span>
+        <div class="form-group mt-1 mb-3">
+          <label for="jadwal_id">Jadwal dan Skema</label>
+          <input type="text" class="form-control" id="jadwal_display" 
+                 value="{{ $jadwal->skema->nama_skema }} - {{ $jadwal->tgl_ujian }}" readonly>
         </div>
         <div class="form-group mt-1 mb-3">
           <label for="nik">NIK</label>

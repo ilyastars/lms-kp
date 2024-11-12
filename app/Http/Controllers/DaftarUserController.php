@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Skema;
+use App\Models\Jadwal;
 use App\Models\DaftarUser;
 use App\Models\Pendaftaran;
 use Illuminate\Http\Request;
@@ -23,10 +24,29 @@ class DaftarUserController extends Controller
     /**
      * Show the form for creating a new resource.
      */
-    public function create($skema_id)
+    public function create($jadwal_id)
     {
-        $data['listJadwal'] = \App\Models\Jadwal::with('skema')->orderBy('tgl_ujian', 'asc')->get();
-        return view('daftar_user', $data);
+        // $data['listJadwal'] = \App\Models\Jadwal::with('skema')->orderBy('tgl_ujian', 'asc')->get();
+        // return view('daftar_user', $data);
+
+        $user = Auth::user();
+
+    if (!$user) {
+        return redirect()->route('login')->with('error', 'Anda harus login untuk mengakses halaman ini.');
+    }
+
+    $existingPendaftaran = Pendaftaran::where('user_id', $user->id)->where('jadwal_id', $jadwal_id)->first();
+    $jadwal = Jadwal::with('skema')->findOrFail($jadwal_id);
+
+    // Hitung urutan pendaftaran untuk kode pendaftaran
+    $pendaftaranCount = Pendaftaran::where('jadwal_id', $jadwal_id)->count();
+
+    return view('daftar_user', [
+        'user' => $user,
+        'jadwal' => $jadwal,
+        'existingPendaftaran' => $existingPendaftaran,
+        'pendaftaranCount' => $pendaftaranCount,
+    ]);
 
         // $user = Auth::user(); // Ambil data user yang sedang login
         // $existingPendaftaran = Pendaftaran::where('user_id', $user->id)->where('jadwal_id', $skema_id)->first();
@@ -65,6 +85,7 @@ class DaftarUserController extends Controller
      */
     public function store(Request $request)
     {
+        // dd($request->all());
         $requestData = $request->validate([
             'kd_pendaftaran' => 'required',
             'nama' => 'required',
@@ -80,12 +101,13 @@ class DaftarUserController extends Controller
         ]);
         
 
-        $pendaftaran = new \App\Models\Pendaftaran(); 
+        $pendaftaran = new \App\Models\DaftarUser(); 
         $pendaftaran->fill($requestData);
-        $pendaftaran->user_id = '1'; 
+        // $pendaftaran->user_id = '1'; 
         $pendaftaran->save(); 
         flash('Data sudah di simpan')->success();
         return back();
+        // redirect('app_homepage');
     }
 
     /**

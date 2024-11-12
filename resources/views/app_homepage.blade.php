@@ -197,7 +197,7 @@
                                 <!-- Menampilkan gambar dari kolom foto -->
                                 <img class="img-fluid" src="{{ asset('storage/' . $item->skema->foto) }}" alt="{{ $item->skema->nama_skema }}">
                                 <div class="w-100 d-flex justify-content-center position-absolute bottom-0 start-0 mb-4">
-                                    <a href="{{ route('daftar_user.create', ['skema_id' => $item->skema->id]) }}" class="flex-shrink-0 btn btn-sm btn-primary px-3 w-50" style="border-radius: 30px;">Daftar</a>
+                                    <a href="{{ route('daftar_user.create', ['jadwal_id' => $item->id]) }}" class="flex-shrink-0 btn btn-sm btn-primary px-3 w-50" style="border-radius: 30px;">Daftar</a>
                                 </div>
                             </div>
                             <div class="text-center p-4 pb-0">

@@ -36,7 +36,8 @@ Route::middleware([Authenticate::class])->group(function(){
 //pindahkan route data yg perlu hak akses lainya di sini
 });
 
-Route::get('/daftar_user/{skema_id}', [DaftarUserController::class, 'create'])->name('daftar_user.create');
+Route::get('/daftar_user/{jadwal_id}', [DaftarUserController::class, 'create'])->name('daftar_user.create');
+Route::post('/daftar_user', [DaftarUserController::class, 'store'])->name('daftar_user.store');
 
 
 // multi user
